@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django.http import HttpResponse
 
-def index(request):
+def inde(request):
     now = datetime.now()
     html = f'''
     <html>
@@ -14,3 +14,7 @@ def index(request):
     </html>
     '''
     return HttpResponse(html)
+
+def index(request)
+    titulo = "hola pe"
+    return render(request, 'index.html',{'titulo':titulo})
