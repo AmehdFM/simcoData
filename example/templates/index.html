@@ -1,13 +1,59 @@
 {% load static %}
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
-	<link rel="Alternate stylesheet" type="text/css" href="{% static 'styles.css' %}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Título de tu Página</title>
+    <link rel="icon" href="{% static 'images/favicon.png' %}">
+
+
+    
+    {% comment %} Estilos por que estoy pendejo y no logro conectar el archivo css {% endcomment %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .titulo {
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .articulo {
+          height: 100px;
+          width: 150px;
+          border: solid;
+          border-color: royalblue;
+        }
+        
+    </style>
+
+
 </head>
 <body>
-	<h1 class="titulo">Hello</h1>
+{% include 'nav_bar.html' %}
+
+    <h1 class="titulo">Hello</h1>
+
+    <div class="container-principal">
+      <div class="tarjeta">
+        <h2 class="titulo-articulo"></h2>
+        <ul>
+          <li class="articulo">
+            
+          </li>
+        </ul>
+      </div>
+
+    </div>
+    
 </body>
 </html>

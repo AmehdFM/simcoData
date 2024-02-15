@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+
+</head>
+<body>
+	{% include 'nav_bar.html' %}
+
+	<div class="datos">
+    <form>
+    <p class="textoDescriptivo">Elija el artículo que quiere producir</p>
+    <div>
+        <div>
+            <label class="label">Selecciona un recurso</label>
+            <select class="opciones" id="opcion"> <!-- Agrega un ID aquí -->
+                {% for material in materialList %}
+                    <option value="{{ material.id }}">{{ material.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+	</form>
+    <div>
+        <button id="calcular">calcular</button>
+    </div>
+    <div>
+        <div>
+            <label>Bonus de producción</label>
+            <input id="numBonus" type="number" step="1" min="0" max="40" value="0">
+        </div>
+        <div>
+            <label>Niveles</label>
+            <input id="numNiveles" type="number" step="1" min="0" value="1">
+        </div>
+    </div>
+    <div>
+        
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var button = document.getElementById('calcular');
+    button.addEventListener('click', function () {
+        var bonus = document.getElementById('numBonus').value;
+        var niveles = document.getElementById('numNiveles').value;
+        var materialId = document.getElementById('opcion').value;
+
+        // Construye la URL con los parámetros
+        var url = '/mapaCalculado/?bonus=' + bonus + '&lvls=' + niveles + '&id=' + materialId;
+        
+        // Redirige a la nueva URL
+        window.location.href = url;
+    });
+});
+</script>
+
+
+</body>
+</html>

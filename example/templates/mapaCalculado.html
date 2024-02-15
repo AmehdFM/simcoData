@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+
+    <style type="text/css">
+
+
+/* Estilo para el contenedor principal */
+#recursos-necesarios {
+  display: flex; /* Cambia a flex-direction: column */
+  justify-content: center;
+  margin-top: 20px; /* Agrega margen superior */
+}
+
+/* Estilo para el contenedor del título */
+.titulo-recursos {
+  text-align: center;
+}
+
+/* Estilo para cada tarjeta de recurso */
+.tarjeta-recurso {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px;
+  padding: 10px;
+  width: 200px; /* Ancho deseado de cada tarjeta */
+}
+
+/* Estilo para el nombre del recurso */
+.recurso-kind {
+  font-weight: bold;
+}
+
+/* Estilo para la cantidad necesaria */
+.recurso-necesario {
+  color: #666;
+}
+
+/* Estilo para la cantidad producida */
+.recurso-cantidad {
+  color: #00b300; /* Color verde para resaltar la cantidad producida */
+}
+
+/* Estilo para la imagen */
+.recurso-imagen {
+  float: right;
+  margin-top: 10px;
+  max-width: 50px; /* Ajusta el tamaño máximo de la imagen */
+}
+.recurso-imagen {
+  float: right;
+  margin-top: 10px;
+  max-width: 50px; /* Ajusta el tamaño máximo de la imagen */
+}
+
+
+
+/* Estilos de la barra superior con los parametros ------------------------------------------------------------------- */
+#barra-superior {
+    background-color: #f9f9f9; /* Color de fondo de la barra */
+    padding: 10px 20px; /* Espaciado interior */
+    display: flex; /* Utiliza flexbox para distribuir los elementos horizontalmente */
+    justify-content: space-between; /* Distribuye los elementos horizontalmente con espaciado entre ellos */
+    align-items: center; /* Centra verticalmente los elementos */
+}
+
+.textoDescriptivo {
+    font-weight: bold;
+    margin: 0; /* Elimina el margen superior e inferior */
+}
+
+.label {
+    font-weight: bold;
+}
+
+.opciones {
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+#calcular {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    border: none;
+}
+
+.inputs {
+    display: flex;
+    align-items: center; /* Centra verticalmente los elementos */
+}
+
+.inputs div {
+    margin-left: 20px; /* Ajusta el margen izquierdo entre los elementos */
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="number"] {
+    width: 80px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/*estilos del recurso selecionado que sale arriba a la izquierda ---------------------------------------------------*/
+.recurso-selecionado {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.nombre-recurso-seleccionado {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.imagen-recurso-seleccionado {
+  max-width: 100px;
+  max-height: 100px;
+}
+
+/* Opcional: Media queries para ajustar el tamaño en dispositivos móviles */
+
+@media (max-width: 768px) {
+  .recurso-selecionado {
+    position: static;
+    margin: 10px auto;
+  }
+}
+
+    </style>
+
+
+</head>
+<body>
+    <!-- Seccion con la barra superior que contiene los parametros -->
+	<div id="barra-superior">
+    <div class="recurso-seleccionado">
+        <p class="nombre-recurso-seleccionado">{{ materialObjetivo.name }}</p>
+        <img src="{{ materialObjetivo.url }}" class="imagen-recurso-seleccionado">
+    </div>
+    <div>
+        <button id="calcular">Calcular</button>
+    </div>
+    <div class="inputs">
+        <div>
+            <label for="numBonus">Bonus de producción</label>
+            <input id="numBonus" type="number" step="1" min="0" max="40" value="0">
+        </div>
+        <div>
+            <label for="numNiveles">Niveles del edificio principal</label>
+            <input id="numNiveles" type="number" step="1" min="0" value="1">
+        </div>
+        <div>
+            <label for="numNiveles">Nivel de la cuenta</label>
+            <input id="numNiveles" type="number" step="1" min="0" value="1">
+        </div>
+    </div>
+</div>
+
+
+<!-- seccion donde se muestran los recursos necesarios -->
+<div class="titulo-recursos">
+  <h1>Recursos Necesarios</h1>
+</div>
+
+<div id="recursos-necesarios">
+  {% for recursoNecesario in recursos %}
+  <div class="tarjeta-recurso">
+    <p class="recurso-kind">{{ recursoNecesario.kind }}</p>
+    <img src="{{ recursoNecesario.url }}" class="recurso-imagen">
+    <p class="recurso-necesario">{{ recursoNecesario.necesario }}</p>
+    <p class="recurso-cantidad">{{ recursoNecesario.cantidad }}</p>
+  </div>
+  {% endfor %}
+</div>
+
+
+
+<script type="text/javascript">
+   document.addEventListener('DOMContentLoaded', function () {
+    var button = document.getElementById('calcular');
+    button.addEventListener('click', function () {
+        var bonus = document.getElementById('numBonus').value;
+        var niveles = document.getElementById('numNiveles').value;
+        var materialId = document.getElementById('opcion').value;
+
+        // Construye la URL con los parámetros
+        var url = '/mapaCalculado/?bonus=' + bonus + '&lvls=' + niveles + '&id=' + materialId;
+
+        // Realiza una solicitud AJAX a la vista de Django
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                // Muestra los datos en los elementos HTML
+                document.getElementById('kind').textContent = data.kind;
+                document.getElementById('cantidad').textContent = recursos.cantidad;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+});
+</script> 
+
+</body>
+</html>

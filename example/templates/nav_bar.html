@@ -1,0 +1,67 @@
+<!-- myapp/templates/myapp/navbar.html -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'example/css/navbar.css' %}">
+
+
+
+    {% comment %} Estilos por que estoy pendejo y no logro conectar el archivo css {% endcomment %}
+    <style>
+        .navbar {
+            border-color: black;
+            border: solid;
+        }
+        .navbar-container {
+            height: 60px;
+            width: 100%;
+            display: flex;
+            background-color: gray;
+        }
+        .navbar-logo {
+            border-radius: 10px;
+            border: solid;
+            height: 60px;
+            width: 5%;
+        }
+        .navbar-links {
+            display: flex;
+            height: 60px;
+            width: 80%;
+            border: solid;
+            border-color: red;
+            margin: 0 50px;
+        }
+        .navbar-link {
+            text-decoration: none;
+            color: white;
+            padding-left: 10%;
+            padding-right: 10%;
+            font-size: 30px;
+            align-content: center;
+        }
+        
+        
+    </style>
+
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="navbar-container">
+        <a href="/index" class="navbar-logo">Logo</a>
+        <div class="navbar-links">
+            <a href="#" class="navbar-link">Home</a>
+            <a href="#" class="navbar-link">About</a>
+            <a href="#" class="navbar-link">Contact</a>
+            <!-- Agrega más enlaces según sea necesario -->
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>
