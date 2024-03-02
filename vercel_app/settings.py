@@ -56,7 +56,7 @@ ROOT_URLCONF = 'vercel_app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ 'templates' ],
+        'DIRS': [ 'templates', 'static' ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

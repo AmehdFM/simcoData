@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Simco Data</title>
+
+<style type="text/css">
+.bar-data {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f0f0f0; /* Color de fondo suave */
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  height: 70px;
+}
+
+.resource-select {
+  display: flex;
+  align-items: center;
+  padding-left: 5px;
+  padding-right: 10px;
+}
+
+.resource-select-name {
+  margin-left: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  color: #333; /* Color de texto más oscuro */
+}
+
+.resource-select-image {
+  height: 50px;
+  width: auto;
+  margin-right: 10px;
+}
+
+.inputs {
+  display: flex;
+  gap: 10px;
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+.inputs-insert {
+  width: 178px;
+}
+.inputs-label {
+  font-weight: bold;
+}
+.calculate-button {
+  background-color: #4caf50; /* Verde suave */
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 40px;
+  margin-left: 10px;
+  margin-right: 80px;
+}
+
+.calculate-button:hover {
+  background-color: #43a047; /* Verde más oscuro al pasar el cursor */
+}
+
+.resources-need {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  padding-bottom: 13px;
+}
+
+.resources-need-card {
+  border: 1px solid #ddd;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  width: 90px;
+  height: 70px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.resources-need-card-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-left: 5px;
+}
+
+.resources-need-card-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+  margin-right: 10px;
+}
+
+.resources-need-card-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}
+
+.resources-need-card-amountNeed {
+  font-size: 14px;
+  color: #666;
+  align-items: flex-end;
+}
+
+.resources-need-card.selected {
+  background-color: #f0f0f0; /* Color de fondo suave al seleccionar */
+  border-color: #ccc;
+}
+
+.resources-need-card:checked {
+  background-color: #e0e0e0; /* Gris suave al seleccionar */
+  border-color: #aaa;
+}
+
+#contenedor-informacion {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+}
+
+.recurso-seleccionado {
+  background-color: #ffffff; /* Blanco para resaltar */
+  padding: 15px;
+  min-width: 45%;
+  border: 1px solid #ddd;
+  flex-basis: 45%;
+  position: relative;
+  height: 100px;
+}
+
+.recurso-seleccionado .recurso-seleccionado-nombre {
+  margin-bottom: 10px;
+}
+
+.recurso-seleccionado .recurso-seleccionado-nombre h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
+
+.recurso-seleccionado .recurso-seleccionado-imagen img {
+  max-width: 100px;
+  max-height: 100px;
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+.recurso-seleccionado .recurso-seleccionado-datos {
+  margin: 0 auto;
+}
+.recurso-seleccionado-datos {
+  position: absolute;
+  bottom: 2px;
+  left: 7px;
+}
+
+.recurso-seleccionado .recurso-seleccionado-datos ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: #666;
+}
+
+.recurso-seleccionado .recurso-seleccionado-datos ul li {
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.resource-select-data {
+  border-top: 2px solid #ddd;
+  background-color: #f0f0f0;
+  padding: 10px;
+  margin-top: 100px;
+}
+.resource-select-data {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.resource-select-data-needList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.resource-select-data-needTitle {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.resource-select-data-name {
+  margin-right: 10px;
+  font-size: 16px;
+}
+#resource-select-data-dailyProduction {
+  font-weight: bold;
+}
+
+</style>
+
+</head>
+<body>
+
+	<div class="bar-data">
+
+  	<div class="resource-select">
+    	<p class="resource-select-name">{{ recursoSeleccionado.name }}</p>
+    	<img src="{{ recursoSeleccionado.image }}" class="resource-select-image">
+  	</div>
+
+  	<div class="inputs">
+<!--     	<div>
+      	<label class="inputs-label">Nivel de la cuenta</label>
+      	<input type="number" step="1" min="0" value="1" id="nivel-cuenta">
+    	</div> -->
+    	<div class="inputs-insert">
+      	<label class="inputs-label">Niveles de producción</label>
+      	<input type="number" step="1" min="0" value="1" id="nivel-edificio-principal">
+    	</div>
+    	<div class="inputs-insert">
+      	<label class="inputs-label">Bonus de produccion</label>
+      	<input type="number" step="1" min="0" value="1" id="bonus-produccion">
+    	</div>
+  	</div>
+
+  	<button class="calculate-button" >Calcular</button>
+	</div>
+
+	<div class="resource-select-data">
+		<ul class="resource-select-data-needList">
+			<label class="resource-select-data-needTitle">Recursos Necesarios</label>
+			{% for i in recursosNecesarios %}
+			<li class="resource-select-data-name">{{ i.name }}:   {{ i.amount }}</li>
+			{% endfor %}
+		</ul>
+		<label id="resource-select-data-dailyProduction">Produccion Diaria: 0</label>
+	</div>
+
+	<div class="resources-need">
+  {% for need in recursosNecesarios %}
+    <button class="resources-need-card" id="{{ need.id }}" data-checked="false">
+        <img src="{{ need.image }}" class="resources-need-card-img resources-need-card-img-corner">
+    </button>
+  {% endfor %}
+	</div>
+
+	<div id="contenedor-informacion"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+	<script type="text/javascript">
+const idResource = {{ recursoSeleccionado.id }};
+const nivelEdificioProduccionInput = document.getElementById('nivel-edificio-principal');
+const calculateButton = document.querySelector('.calculate-button');
+const nivelCuentaInput = document.getElementById('nivel-cuenta');
+const bonusProduccionInput = document.getElementById('bonus-produccion');
+const resourcesNeedButtons = document.querySelectorAll('.resources-need-card');
+let selectedIds = []; // Lista para almacenar los IDs seleccionados
+
+// Función para obtener los IDs seleccionados
+function getSelectedIds() {
+  selectedIds = [];
+  resourcesNeedButtons.forEach((button) => {
+    if (button.dataset.checked === "true") {
+      selectedIds.push(button.id);
+    }
+  });
+}
+
+// Función para aplicar estilos activos
+function applyActiveStyles(id) {
+  const button = document.getElementById(id);
+  // Agrega estilos específicos al botón con el ID "id"
+  button.style.backgroundColor = "#ddd";
+  button.style.border = "1px solid #aaa";
+  button.classList.add('active'); // Agregar clase "active"
+}
+
+// Función para remover estilos activos
+function removeActiveStyles(id) {
+  const button = document.getElementById(id);
+  // Eliminar estilos específicos del botón con el ID "id"
+  button.style.backgroundColor = ""; // Eliminar color de fondo
+  button.style.border = ""; // Eliminar borde
+  button.classList.remove('active'); // Eliminar clase "active"
+}
+
+// Función para alternar el estado checked del botón
+function toggleCheckedState(button) {
+  button.dataset.checked = button.dataset.checked === "true" ? "false" : "true";
+}
+
+// Agregar evento click a cada botón de recursos
+resourcesNeedButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const id = button.id;
+
+    // Alternar el estado checked del botón
+    toggleCheckedState(button);
+
+    // Si el ID ya está en la lista, quitarlo
+    if (selectedIds.includes(id)) {
+      selectedIds.splice(selectedIds.indexOf(id), 1);
+      removeActiveStyles(id);
+    } else {
+      // Si el ID no está en la lista, agregarlo
+      selectedIds.push(id);
+      applyActiveStyles(id);
+    }
+
+    getSelectedIds(); // Obtener la lista actualizada de IDs
+    console.log('IDs seleccionados:', selectedIds);
+  });
+});
+
+calculateButton.addEventListener('click', async () => {
+  // Obtener los valores de los inputs
+  const nivelCuenta = 1;
+  const bonusProduccion = bonusProduccionInput.value;
+  const nivelEdificioProduccion = nivelEdificioProduccionInput.value;
+
+  // Enviar datos al view
+  try {
+    const response = await fetch(
+      `/resourceNeedData/?nivelCuenta=${nivelCuenta}&bonusProduccion=${bonusProduccion}&recursosSeleccionados=${selectedIds}&nivelEdificioProduccion=${nivelEdificioProduccion}&id=${idResource}`
+    );
+
+    if (response.ok) {
+      const data = await response.json();
+      // Procesar la respuesta del view
+      // Mostrar los datos en la sección correspondiente
+      // Usando una plantilla HTML para mostrar los datos
+      console.log(data);
+
+      const contenedorInformacion = document.getElementById("contenedor-informacion");
+      contenedorInformacion.innerHTML = "";
+
+      const labelProduccionDiaria = document.getElementById("resource-select-data-dailyProduction");
+      const ProduccionDiaria = data.recursoFinal.dailyProduction;
+      labelProduccionDiaria.textContent = "Produccion Diaria:     " + ProduccionDiaria;
+
+      for (const recurso of data.material) {
+        console.log('Nombre:', recurso.nombre);
+        console.log('Imagen:', recurso.imagen);
+        console.log('Cantidad Día:', recurso.cantidadDia);
+        console.log('Niveles:', recurso.niveles);
+
+        const html = `
+          <section class="recurso-seleccionado">
+            <div class="recurso-seleccionado-nombre">
+              <h2>${recurso.nombre}</h2>
+            </div>
+            <div class="recurso-seleccionado-imagen">
+              <img src="${recurso.imagen}" alt="${recurso.nombre}">
+            </div>
+            <div class="recurso-seleccionado-datos">
+              <ul class="datos-recurso">
+              	<li>Cantidad diaria necesaria: ${recurso.necesarioDia}
+                <li>Cantidad diaria producida:  ${recurso.cantidadDia}</li>
+                <li>Niveles: ${recurso.niveles}</li>
+              </ul>
+            </div>
+          </section>`;
+
+        $('#contenedor-informacion').append(html);
+      }
+    } else {
+      // Manejar errores
+      console.error('Error al enviar datos:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Error en la solicitud AJAX:', error);
+  }
+});
+
+// Agregar evento touchend a cada botón de recursos
+resourcesNeedButtons.forEach((button) => {
+  button.addEventListener('touchend', () => {
+    const id = button.id;
+    toggleCheckedState(button);
+    removeActiveStyles(id);
+  });
+});
+
+	</script>
+<script type="text/template" id="template-recurso-seleccionado">
+  <section class="recurso-seleccionado">
+    <h2>{{ nombre }}</h2>
+    <img src="{{ imagen }}" alt="{{ nombre }}">
+    <ul class="datos-recurso">
+      <li>Cantidad diaria necesaria: {{ cantidadDia }}</li>
+      <li>Niveles del edificio necesarios: {{ niveles }}</li>
+    </ul>
+  </section>
+</script>
+
+</body>
+</html>

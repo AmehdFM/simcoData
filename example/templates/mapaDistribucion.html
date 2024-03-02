@@ -6,41 +6,163 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title></title>
 
+<style type="text/css">
+/* Estilos generales */
+.datos-barra {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f2f2f2;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Texto descriptivo */
+.textoDescriptivo {
+  font-size: 16px;
+  margin: 0;
+  color: #666;
+}
+
+/* Opciones de selección */
+.opciones {
+  font-size: 14px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 200px;
+}
+
+/* Label */
+.label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+/* Botón Calcular */
+#calcular {
+  background-color: #0099ff;
+  color: #fff;
+  font-size: 14px;
+  padding: 5px 10px;
+  border: 1px solid #0099ff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Contenedor de bonus y niveles */
+.datos-barra div:last-child {
+  display: flex;
+  margin-left: 20px;
+}
+
+/* Inputs */
+#numBonus,
+#numNiveles {
+  font-size: 14px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 100px;
+}
+
+/* Media queries para pantallas pequeñas */
+@media (max-width: 768px) {
+  .datos-barra {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .datos-barra div:last-child {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}
+
+
+
+
+
+.lista-de-recursos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  width: 80%;
+  max-width: 1000px;
+}
+
+.recurso-opcion {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  width: 150px;
+  height: 100px;
+}
+
+.btn-recurso {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: #fff;
+  color: #000;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+
+.btn-recurso:hover {
+  background-color: #ddd;
+}
+
+</style>
+
+
+
 </head>
 <body>
-	{% include 'nav_bar.html' %}
-
-	<div class="datos">
-    <form>
+<div class="datos-barra">
+  <form>
     <p class="textoDescriptivo">Elija el artículo que quiere producir</p>
+      <div>
+        <label class="label" for="opcion">Selecciona un recurso</label>
+        <select class="opciones" id="opcion">
+          {% for material in materialList %}
+            <option value="{{ material.id }}">{{ material.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+  </form>
+  <div>
+    <button id="calcular">Calcular</button>
+  </div>
+  <div>
     <div>
-        <div>
-            <label class="label">Selecciona un recurso</label>
-            <select class="opciones" id="opcion"> <!-- Agrega un ID aquí -->
-                {% for material in materialList %}
-                    <option value="{{ material.id }}">{{ material.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div>
-	</form>
-    <div>
-        <button id="calcular">calcular</button>
-    </div>
-    <div>
-        <div>
-            <label>Bonus de producción</label>
-            <input id="numBonus" type="number" step="1" min="0" max="40" value="0">
-        </div>
-        <div>
-            <label>Niveles</label>
-            <input id="numNiveles" type="number" step="1" min="0" value="1">
-        </div>
+      <label for="numBonus">Bonus de producción</label>
+      <input id="numBonus" type="number" step="1" min="0" max="40" value="0">
     </div>
     <div>
-        
+      <label for="numNiveles">Niveles</label>
+      <input id="numNiveles" type="number" step="1" min="0" value="1">
     </div>
+  </div>
 </div>
+
+<div class="lista-de-recursos">
+  {% for material in materialList %}
+    <div class="recurso-opcion">
+      <img src="{% static 'imagenes/recursos/' %}{{ material.name }}.png" class="recurso-imagen">
+      <button class="btn-recurso" value="{{ material.name }}">{{ material.name }}</button>
+    </div>
+  {% endfor %}
+</div>
+
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {

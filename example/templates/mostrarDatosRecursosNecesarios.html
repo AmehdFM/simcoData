@@ -1,0 +1,10 @@
+{% for recurso in material %}
+<section class="recurso-seleccionado">
+  <h2>{{ recurso.nombre }}</h2>
+  <img src="{{ recurso.imagen }}" alt="{{ recurso.nombre }}">
+  <ul class="datos-recurso">
+    <li>Cantidad diaria necesaria: {{ recurso.cantidad_diaria_necesaria }}</li>
+    <li>Niveles del edificio necesarios: {{ recurso.niveles_necesarios }}</li>
+  </ul>
+</section>
+{% endfor %}

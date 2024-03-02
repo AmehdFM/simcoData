@@ -1,59 +1,83 @@
 {% load static %}
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Título de tu Página</title>
-    <link rel="icon" href="{% static 'images/favicon.png' %}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simco Data</title>
 
+<style type="text/css">
+/* Colores */
 
-    
-    {% comment %} Estilos por que estoy pendejo y no logro conectar el archivo css {% endcomment %}
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
+body {
+  background-color: #f7f7f7;
+  color: #333;
+}
 
-        .titulo {
-            color: #333;
-            text-align: center;
-            padding: 20px;
-            background-color: #fff;
-            border-bottom: 2px solid #ddd;
-        }
+.principal-barr {
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-        .articulo {
-          height: 100px;
-          width: 150px;
-          border: solid;
-          border-color: royalblue;
-        }
-        
-    </style>
+.select-container {
+  display: inline-block;
+  margin-right: 10px;
+}
 
+#resources {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#btt-select {
+  padding: 8px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #28a745;
+  color: #fff;
+  cursor: pointer;
+}
+
+#btt-select:hover {
+  background-color: #1e8c39;
+}
+</style>
 
 </head>
+
+
 <body>
-{% include 'nav_bar.html' %}
-
-    <h1 class="titulo">Hello</h1>
-
-    <div class="container-principal">
-      <div class="tarjeta">
-        <h2 class="titulo-articulo"></h2>
-        <ul>
-          <li class="articulo">
-            
-          </li>
-        </ul>
-      </div>
-
+  <div class="principal-barr">
+    <div class="select-container">
+      <select id="resources">
+          {% for resource in resources %}
+          <option value="{{ resource.id }}">{{ resource.name }}</option>
+          {% endfor %}
+      </select>
     </div>
-    
+    <button id="btt-select">Seleccionar</button>
+  </div>
+
+<script type="text/javascript">
+  document.getElementById("btt-select").addEventListener("click", function() {
+    // Obtener el valor del elemento seleccionado
+    const selectedValue = document.getElementById("resources").value;
+
+    // Crear la nueva URL con el valor seleccionado
+    const newUrl = `/produccion/${selectedValue}`; // Reemplaza esto con tu base URL
+
+    // Redirigir a la nueva URL
+    window.location.href = newUrl;
+  });
+</script>
+
+
 </body>
+
+
 </html>

@@ -5,7 +5,8 @@ from example import views
 
 
 urlpatterns = [
-    path('', views.mapaDistribucion),
-    path('calcular/', views.calcular, name='calcular'),
+    path('', views.index),
     path('mapaCalculado/', views.calcularProduccionNecesaria, name='calcular_produccion'),
+    path('produccion/<int:value>', views.userData),
+    path('resourceNeedData/', views.resourceNeedData)
 ]

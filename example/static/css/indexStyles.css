@@ -1,0 +1,48 @@
+/* Colores */
+
+body {
+  background-color: #f7f7f7;
+  color: #333;
+}
+
+.principal-barr {
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+}
+
+.select-container {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+#resources {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#btt-select {
+  padding: 8px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #28a745;
+  color: #fff;
+  cursor: pointer;
+}
+
+#btt-select:hover {
+  background-color: #1e8c39;
+}
+
+/* Media queries para dispositivos móviles */
+
+@media (max-width: 768px) {
+  .principal-barr {
+    padding: 5px;
+  }
+
+  .select-container {
+    margin-right: 5px;
+  }
+}

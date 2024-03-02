@@ -1,12 +1,14 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
+	<link rel="stylesheet" href="{% static 'css/index.css' %}">
 
-    <style type="text/css">
-
+<style type="text/css">
+  
 
 /* Estilo para el contenedor principal */
 #recursos-necesarios {
@@ -143,20 +145,10 @@ input[type="number"] {
   max-width: 100px;
   max-height: 100px;
 }
-
-/* Opcional: Media queries para ajustar el tamaño en dispositivos móviles */
-
-@media (max-width: 768px) {
-  .recurso-selecionado {
-    position: static;
-    margin: 10px auto;
-  }
-}
-
-    </style>
-
+</style>
 
 </head>
+
 <body>
     <!-- Seccion con la barra superior que contiene los parametros -->
 	<div id="barra-superior">
@@ -186,16 +178,16 @@ input[type="number"] {
 
 <!-- seccion donde se muestran los recursos necesarios -->
 <div class="titulo-recursos">
-  <h1>Recursos Necesarios</h1>
+  <h1>Recursos Necesarios {{ recursoNecesario.pruduccionDiaria }}</h1>
 </div>
 
 <div id="recursos-necesarios">
   {% for recursoNecesario in recursos %}
   <div class="tarjeta-recurso">
-    <p class="recurso-kind">{{ recursoNecesario.kind }}</p>
+    <p class="recurso-kind" id="kind">{{ recursoNecesario.kind }}</p>
     <img src="{{ recursoNecesario.url }}" class="recurso-imagen">
     <p class="recurso-necesario">{{ recursoNecesario.necesario }}</p>
-    <p class="recurso-cantidad">{{ recursoNecesario.cantidad }}</p>
+    <p class="recurso-cantidad" id="cantidad" >{{ recursoNecesario.cantidad }}</p>
   </div>
   {% endfor %}
 </div>
@@ -203,29 +195,85 @@ input[type="number"] {
 
 
 <script type="text/javascript">
-   document.addEventListener('DOMContentLoaded', function () {
-    var button = document.getElementById('calcular');
-    button.addEventListener('click', function () {
-        var bonus = document.getElementById('numBonus').value;
-        var niveles = document.getElementById('numNiveles').value;
-        var materialId = document.getElementById('opcion').value;
+var button = document.getElementById('calcular');
 
-        // Construye la URL con los parámetros
-        var url = '/mapaCalculado/?bonus=' + bonus + '&lvls=' + niveles + '&id=' + materialId;
+document.addEventListener('DOMContentLoaded', function () {
+  button.addEventListener('click', function () {
+    // Obtener valores de los inputs
+    var bonus = document.getElementById('numBonus').value;
+    var nivelesEdificioPrincipal = document.getElementById('numNiveles').value;
+    var nivelCuenta = document.getElementById('numNiveles').value;
+    var materialId = document.getElementById('opcion').value;
 
-        // Realiza una solicitud AJAX a la vista de Django
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                // Muestra los datos en los elementos HTML
-                document.getElementById('kind').textContent = data.kind;
-                document.getElementById('cantidad').textContent = recursos.cantidad;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    });
+    // Construir la URL con los parámetros
+    var url = '/mapaCalculado/?bonus=' + bonus + '&lvls=' + nivelesEdificioPrincipal + '&nivelCuenta=' + nivelCuenta + '&id=' + materialId;
+
+    // Mostrar indicador de carga
+    var loadingIndicator = document.getElementById('loading-indicator');
+    loadingIndicator.classList.add('visible');
+
+    // Realizar solicitud AJAX
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        // Ocultar indicador de carga
+        loadingIndicator.classList.remove('visible');
+
+        // Mostrar mensaje de éxito
+        var successMessage = document.getElementById('success-message');
+        successMessage.classList.add('visible');
+        successMessage.textContent = '¡Cálculo realizado con éxito!';
+
+        // Actualizar contenido de los elementos HTML
+        document.getElementById('kind').textContent = data.kind;
+        document.getElementById('cantidad').textContent = data.cantidad;
+        console.log(data)
+      })
+      .catch(error => {
+        // Ocultar indicador de carga
+        loadingIndicator.classList.remove('visible');
+
+        // Mostrar mensaje de error
+        var errorMessage = document.getElementById('error-message');
+        errorMessage.classList.add('visible');
+        errorMessage.textContent = 'Error al realizar el cálculo: ' + error;
+      });
+  });
 });
+
+// Función para validar los inputs
+function validateInputs() {
+  // Validar bonus
+  var bonus = document.getElementById('numBonus').value;
+  if (isNaN(bonus) || bonus < 0 || bonus > 40) {
+    return false;
+  }
+
+  // Validar niveles del edificio principal
+  var nivelesEdificioPrincipal = document.getElementById('numNiveles').value;
+  if (isNaN(nivelesEdificioPrincipal) || nivelesEdificioPrincipal < 0) {
+    return false;
+  }
+
+  // Validar nivel de la cuenta
+  var nivelCuenta = document.getElementById('numNiveles').value;
+  if (isNaN(nivelCuenta) || nivelCuenta < 0) {
+    return false;
+  }
+
+  return true;
+}
+
+// Agregar evento al botón "Calcular" para validar inputs
+button.addEventListener('click', function () {
+  if (!validateInputs()) {
+    // Mostrar mensaje de error de validación
+    var errorMessage = document.getElementById('validation-error-message');
+    errorMessage.classList.add('visible');
+    errorMessage.textContent = 'Por favor, ingrese valores válidos en los campos.';
+  }
+});
+
 </script> 
 
 </body>
