@@ -71,6 +71,35 @@
   background-color: #43a047; /* Verde más oscuro al pasar el cursor */
 }
 
+/* Base styles for small screens (up to 768px) */
+@media (max-width: 768px) {
+  .bar-data {
+    height: 50px;
+    padding: 5px;
+  }
+
+  .resource-select-name {
+    font-size: 14px;
+  }
+
+  .resource-select-image {
+    height: 30px;
+  }
+
+  .inputs-insert {
+    width: 120px;
+  }
+
+  .calculate-button {
+    font-size: 14px;
+    padding: 5px 10px;
+    margin-right: 50px;
+  }
+}
+
+
+
+
 .resources-need {
   display: flex;
   flex-wrap: wrap;
@@ -267,51 +296,50 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-	<script type="text/javascript">
-const idResource = {{ recursoSeleccionado.id }};
-const nivelEdificioProduccionInput = document.getElementById('nivel-edificio-principal');
-const calculateButton = document.querySelector('.calculate-button');
-const nivelCuentaInput = document.getElementById('nivel-cuenta');
-const bonusProduccionInput = document.getElementById('bonus-produccion');
-const resourcesNeedButtons = document.querySelectorAll('.resources-need-card');
-let selectedIds = []; // Lista para almacenar los IDs seleccionados
+<script type="text/javascript">
+  const idResource = {{ recursoSeleccionado.id }};
+  const nivelEdificioProduccionInput = document.getElementById('nivel-edificio-principal');
+  const calculateButton = document.querySelector('.calculate-button');
+  const nivelCuentaInput = document.getElementById('nivel-cuenta');
+  const bonusProduccionInput = document.getElementById('bonus-produccion');
+  const resourcesNeedButtons = document.querySelectorAll('.resources-need-card');
+  let selectedIds = []; // Lista para almacenar los IDs seleccionados
 
-// Función para obtener los IDs seleccionados
-function getSelectedIds() {
-  selectedIds = [];
-  resourcesNeedButtons.forEach((button) => {
-    if (button.dataset.checked === "true") {
-      selectedIds.push(button.id);
-    }
-  });
-}
+  // Función para obtener los IDs seleccionados
+  function getSelectedIds() {
+    selectedIds = [];
+    resourcesNeedButtons.forEach((button) => {
+      if (button.dataset.checked === "true") {
+        selectedIds.push(button.id);
+      }
+    });
+  }
 
-// Función para aplicar estilos activos
-function applyActiveStyles(id) {
-  const button = document.getElementById(id);
-  // Agrega estilos específicos al botón con el ID "id"
-  button.style.backgroundColor = "#ddd";
-  button.style.border = "1px solid #aaa";
-  button.classList.add('active'); // Agregar clase "active"
-}
+  // Función para aplicar estilos activos
+  function applyActiveStyles(id) {
+    const button = document.getElementById(id);
+    // Agrega estilos específicos al botón con el ID "id"
+    button.style.backgroundColor = "#ddd";
+    button.style.border = "1px solid #aaa";
+    button.classList.add('active'); // Agregar clase "active"
+  }
 
-// Función para remover estilos activos
-function removeActiveStyles(id) {
-  const button = document.getElementById(id);
-  // Eliminar estilos específicos del botón con el ID "id"
-  button.style.backgroundColor = ""; // Eliminar color de fondo
-  button.style.border = ""; // Eliminar borde
-  button.classList.remove('active'); // Eliminar clase "active"
-}
+  // Función para remover estilos activos
+  function removeActiveStyles(id) {
+    const button = document.getElementById(id);
+    // Eliminar estilos específicos del botón con el ID "id"
+    button.style.backgroundColor = ""; // Eliminar color de fondo
+    button.style.border = ""; // Eliminar borde
+    button.classList.remove('active'); // Eliminar clase "active"
+  }
 
-// Función para alternar el estado checked del botón
-function toggleCheckedState(button) {
-  button.dataset.checked = button.dataset.checked === "true" ? "false" : "true";
-}
+  // Función para alternar el estado checked del botón
+  function toggleCheckedState(button) {
+    button.dataset.checked = button.dataset.checked === "true" ? "false" : "true";
+  }
 
-// Agregar evento click a cada botón de recursos
-resourcesNeedButtons.forEach((button) => {
-  button.addEventListener('click', () => {
+  // Función para manejar eventos de clic o toque en botones de recursos
+  function handleClickOrTouch(button) {
     const id = button.id;
 
     // Alternar el estado checked del botón
@@ -327,91 +355,85 @@ resourcesNeedButtons.forEach((button) => {
       applyActiveStyles(id);
     }
 
-    getSelectedIds(); // Obtener la lista actualizada de IDs
     console.log('IDs seleccionados:', selectedIds);
-  });
-});
-
-calculateButton.addEventListener('click', async () => {
-  // Obtener los valores de los inputs
-  const nivelCuenta = 1;
-  const bonusProduccion = bonusProduccionInput.value;
-  const nivelEdificioProduccion = nivelEdificioProduccionInput.value;
-
-  // Enviar datos al view
-  try {
-    const response = await fetch(
-      `/resourceNeedData/?nivelCuenta=${nivelCuenta}&bonusProduccion=${bonusProduccion}&recursosSeleccionados=${selectedIds}&nivelEdificioProduccion=${nivelEdificioProduccion}&id=${idResource}`
-    );
-
-    if (response.ok) {
-      const data = await response.json();
-      // Procesar la respuesta del view
-      // Mostrar los datos en la sección correspondiente
-      // Usando una plantilla HTML para mostrar los datos
-      console.log(data);
-
-      const contenedorInformacion = document.getElementById("contenedor-informacion");
-      contenedorInformacion.innerHTML = "";
-
-      const labelProduccionDiaria = document.getElementById("resource-select-data-dailyProduction");
-      const ProduccionDiaria = data.recursoFinal.dailyProduction;
-      labelProduccionDiaria.textContent = "Produccion Diaria:     " + ProduccionDiaria;
-
-      for (const recurso of data.material) {
-        console.log('Nombre:', recurso.nombre);
-        console.log('Imagen:', recurso.imagen);
-        console.log('Cantidad Día:', recurso.cantidadDia);
-        console.log('Niveles:', recurso.niveles);
-
-        const html = `
-          <section class="recurso-seleccionado">
-            <div class="recurso-seleccionado-nombre">
-              <h2>${recurso.nombre}</h2>
-            </div>
-            <div class="recurso-seleccionado-imagen">
-              <img src="${recurso.imagen}" alt="${recurso.nombre}">
-            </div>
-            <div class="recurso-seleccionado-datos">
-              <ul class="datos-recurso">
-              	<li>Cantidad diaria necesaria: ${recurso.necesarioDia}
-                <li>Cantidad diaria producida:  ${recurso.cantidadDia}</li>
-                <li>Niveles: ${recurso.niveles}</li>
-              </ul>
-            </div>
-          </section>`;
-
-        $('#contenedor-informacion').append(html);
-      }
-    } else {
-      // Manejar errores
-      console.error('Error al enviar datos:', response.statusText);
-    }
-  } catch (error) {
-    console.error('Error en la solicitud AJAX:', error);
   }
-});
 
-// Agregar evento touchend a cada botón de recursos
-resourcesNeedButtons.forEach((button) => {
-  button.addEventListener('touchend', () => {
-    const id = button.id;
-    toggleCheckedState(button);
-    removeActiveStyles(id);
+  // Agregar evento click a cada botón de recursos
+  resourcesNeedButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      handleClickOrTouch(button);
+    });
   });
-});
 
-	</script>
-<script type="text/template" id="template-recurso-seleccionado">
-  <section class="recurso-seleccionado">
-    <h2>{{ nombre }}</h2>
-    <img src="{{ imagen }}" alt="{{ nombre }}">
-    <ul class="datos-recurso">
-      <li>Cantidad diaria necesaria: {{ cantidadDia }}</li>
-      <li>Niveles del edificio necesarios: {{ niveles }}</li>
-    </ul>
-  </section>
+  // Agregar evento touchend a cada botón de recursos
+  resourcesNeedButtons.forEach((button) => {
+    button.addEventListener('touchend', (event) => {
+      event.preventDefault(); // Prevenir comportamiento predeterminado del evento touchend
+      handleClickOrTouch(button);
+    });
+  });
+
+  calculateButton.addEventListener('click', async () => {
+    // Obtener los valores de los inputs
+    const nivelCuenta = 1;
+    const bonusProduccion = bonusProduccionInput.value;
+    const nivelEdificioProduccion = nivelEdificioProduccionInput.value;
+
+    // Enviar datos al view
+    try {
+      const response = await fetch(
+        `/resourceNeedData/?nivelCuenta=${nivelCuenta}&bonusProduccion=${bonusProduccion}&recursosSeleccionados=${selectedIds}&nivelEdificioProduccion=${nivelEdificioProduccion}&id=${idResource}`
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        // Procesar la respuesta del view
+        // Mostrar los datos en la sección correspondiente
+        // Usando una plantilla HTML para mostrar los datos
+        console.log(data);
+
+        const contenedorInformacion = document.getElementById("contenedor-informacion");
+        contenedorInformacion.innerHTML = "";
+
+        const labelProduccionDiaria = document.getElementById("resource-select-data-dailyProduction");
+        const ProduccionDiaria = data.recursoFinal.dailyProduction;
+        labelProduccionDiaria.textContent = "Produccion Diaria:     " + ProduccionDiaria;
+
+        for (const recurso of data.material) {
+          console.log('Nombre:', recurso.nombre);
+          console.log('Imagen:', recurso.imagen);
+          console.log('Cantidad Día:', recurso.cantidadDia);
+          console.log('Niveles:', recurso.niveles);
+
+          const html = `
+            <section class="recurso-seleccionado">
+              <div class="recurso-seleccionado-nombre">
+                <h2>${recurso.nombre}</h2>
+              </div>
+              <div class="recurso-seleccionado-imagen">
+                <img src="${recurso.imagen}" alt="${recurso.nombre}">
+              </div>
+              <div class="recurso-seleccionado-datos">
+                <ul class="datos-recurso">
+                  <li>Cantidad diaria necesaria: ${recurso.necesarioDia}</li>
+                  <li>Cantidad diaria producida:  ${recurso.cantidadDia}</li>
+                  <li>Niveles: ${recurso.niveles}</li>
+                </ul>
+              </div>
+            </section>`;
+
+          $('#contenedor-informacion').append(html);
+        }
+      } else {
+        // Manejar errores
+        console.error('Error al enviar datos:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error en la solicitud AJAX:', error);
+    }
+  });
 </script>
+
 
 </body>
 </html>
