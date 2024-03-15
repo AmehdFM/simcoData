@@ -1,83 +1,57 @@
-{% load static %}
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simco Data</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Simco Data</title>
 
-<style type="text/css">
-/* Colores */
+    <style type="text/css">
+        body {
+            background-color: #f0f0f0; /* Fondo gris */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: white; /* Color de texto blanco */
+        }
 
-body {
-  background-color: #f7f7f7;
-  color: #333;
-}
+        .opciones {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-.principal-barr {
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+        .opciones-boton {
+            background-color: blue;
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            margin: 10px;
+            font-size: 1.5em;
+            border-radius: 10px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            width: 300px; /* Ancho fijo para los botones */
+        }
 
-.select-container {
-  display: inline-block;
-  margin-right: 10px;
-}
+        .opciones-boton:hover {
+            background-color: darkblue;
+        }
 
-#resources {
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-#btt-select {
-  padding: 8px 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #28a745;
-  color: #fff;
-  cursor: pointer;
-}
-
-#btt-select:hover {
-  background-color: #1e8c39;
-}
-</style>
+        .enlace-texto {
+            color: white; /* Color de texto blanco para los enlaces */
+            text-decoration: none; /* Quita el subrayado de los enlaces */
+        }
+    </style>
 
 </head>
-
-
 <body>
-  <div class="principal-barr">
-    <div class="select-container">
-      <select id="resources">
-          {% for resource in resources %}
-          <option value="{{ resource.id }}">{{ resource.name }}</option>
-          {% endfor %}
-      </select>
+    <div class="opciones">
+        <button id="niveles" class="opciones-boton"><a href="elegirRecurso/" class="enlace-texto">Calculadora de niveles necesarios</a></button>
+        <button id="coste" class="opciones-boton"><a href="constructionCalculator/" class="enlace-texto">Calculadora de coste de construcción</a> </button>
     </div>
-    <button id="btt-select">Seleccionar</button>
-  </div>
-
-<script type="text/javascript">
-  document.getElementById("btt-select").addEventListener("click", function() {
-    // Obtener el valor del elemento seleccionado
-    const selectedValue = document.getElementById("resources").value;
-
-    // Crear la nueva URL con el valor seleccionado
-    const newUrl = `/produccion/${selectedValue}`; // Reemplaza esto con tu base URL
-
-    // Redirigir a la nueva URL
-    window.location.href = newUrl;
-  });
-</script>
-
 
 </body>
-
-
 </html>

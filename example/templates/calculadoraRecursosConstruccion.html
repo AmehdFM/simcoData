@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Simco Data</title>
+
+<style type="text/css">
+/* Estilos para el contenedor principal */
+.data-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #150578; /* Azul */
+  height: 60px;
+  padding: 0 20px;
+}
+
+/* Estilos para el elemento select */
+#building {
+  border: none;
+  background-color: #cccccc; /* Gris */
+  color: #000000;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+/* Estilos para el input */
+.data-inputs {
+  display: flex;
+  align-items: center;
+}
+.recurso-price {
+	display: flex;
+	flex-direction: column;
+	padding: 0px 3rem;
+}
+.resources-price {
+	display: flex;
+	flex-direction: column;
+	height: auto;
+	padding-bottom: 4px;
+}
+
+.data-inputs-text {
+  margin-right: 10px;
+  color: #ffffff; /* Blanco */
+}
+
+#constructionLevels {
+  border: none;
+  background-color: #cccccc; /* Gris */
+  color: #000000;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+.inputs {
+	border: none;
+  	background-color: #cccccc; /* Gris */
+  	color: #000000;
+  	border-radius: 5px;
+  	width: 70px;
+}
+.recurso-price-inputs {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+/* Estilos para el botón */
+#btt-select {
+  border: none;
+  background-color: #4caf50; /* Verde */
+  color: #ffffff; /* Blanco */
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Cambiar color del hover para el botón */
+#btt-select:hover {
+  background-color: #45a049; /* Verde más oscuro */
+}
+
+
+
+.materials-lvl1-table,
+.materials-objective-table {
+  float: left;
+  width: 45%; /* Distribuir el ancho en un 50% para cada tabla */
+  padding: 0 10px; /* Añadir un poco de espacio entre las tablas */
+  padding: 0px 15px;
+}
+
+/* Limpiar flotantes */
+.materials-template::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+/* Estilos para las tablas */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ccc;
+}
+
+/* Estilos para las celdas de la tabla */
+table td, table th {
+  padding: 8px;
+}
+
+/* Estilos para las cabeceras de la tabla */
+table th {
+  background-color: #f2f2f2;
+  text-align: center; /* Centra el texto en las cabeceras */
+}
+
+/* Estilos para alternar filas */
+table tr:nth-child(even) {
+  background-color: #aeaeae;
+}
+
+/* Estilos para los títulos de las tablas */
+table h3 {
+  text-align: center; /* Centra los títulos de las tablas */
+}
+/* Estilos para los títulos de las tablas */
+.materials-lvl1-table-title h3 {
+  text-align: center; /* Centra los títulos de las tablas */
+}
+.materials-template-title h2 { 
+	text-align: center;
+}
+
+
+</style>
+
+
+</head>
+<body>
+	<head class="data">
+		<div class="data-container">
+			<select id="building">
+				{% for building in buildingsList %}
+					<option class="data-building-option" value="{{ building.id }}">{{ building.name }}</option>
+				{% endfor %}
+			</select>
+			<div class="data-inputs">
+				<label class="data-inputs-text">Ingrese la cantidad de niveles que necesita</label>
+				<input type="number" step="1" min="1" value="1" id="constructionLevels">
+			</div>
+			<button id="btt-select" class="data-button">Calcular</button>
+		</div>
+		<div class="resources-price data-inputs data-container">
+			<div>
+				<h3 class="data-inputs-text">Ingrese el precios de los materiales</h3>
+			</div>
+			<div class="recurso-price-inputs">
+			<div class="recurso-price UC">
+				<label class="data-inputs-text">Unidades de construcción</label>
+				<input type="number" step="0.1" min="1" value="0" id="unidades" class="inputs">
+			</div>
+			<div class="recurso-price RC">
+				<label class="data-inputs-text">Concreto Reforzado</label>
+				<input type="number" step="0.1" min="1" value="0" id="concreto" class="inputs">
+			</div>
+			<div class="recurso-price planks">
+				<label class="data-inputs-text">Tabloques</label>
+				<input type="number" step="0.1" min="1" value="0" id="tablones" class="inputs">
+			</div>
+			<div class="recurso-price bricks">
+				<label class="data-inputs-text">Bloques</label>
+				<input type="number" step="0.1" min="1" value="0" id="bloques" class="inputs">
+			</div>
+			</div>
+		</div>
+	</head>
+	<section id="resourcesView">
+		
+	</section>
+
+
+	<script type="text/javascript">
+const bttCalculate = document.getElementById('btt-select');
+const idBuildingInput = document.getElementById("building");
+const lvlsInput = document.getElementById('constructionLevels');
+
+const bloquesInput = document.getElementById('bloques')
+const tablonesInput = document.getElementById('tablones')
+const ucInput = document.getElementById('unidades')
+const rcInput = document.getElementById('concreto')
+
+function agregarComaPorCadaMil(numero) {
+    return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+
+
+bttCalculate.addEventListener('click', async () => {
+  // Get input values
+  const lvls = lvlsInput.value;
+  const idBuilding = idBuildingInput.value;
+
+  const blq = bloquesInput.value;
+  const tbn = tablonesInput.value;
+  const rc = rcInput.value;
+  const uc = ucInput.value; 
+
+  // Send data to view
+  try {
+    const response = await fetch(
+      `/api/BuildingResourcesCalculator/?id=${idBuilding}&lvls=${lvls}&blq=${blq}&tbn=${tbn}&rc=${rc}&uc=${uc}`
+    );
+
+    if (response.ok) {
+  const data = await response.json();
+  // Process response data here
+  console.log(data);
+
+  const contenedorInformacion = document.getElementById("resourcesView");
+  contenedorInformacion.innerHTML = "";
+
+  // Reemplazar 'data' con el objeto JSON recibido de la respuesta
+  const html = `
+    <section class="materials-template">
+      <div class="materials-template-title">
+      <h2>Recursos Necesarios</h2>
+      </div>
+      <div class="materials-lvl1-table">
+      	<div class="materials-lvl1-table-title">
+        <h3>Nivel 1</h3>
+        </div>
+        <table>
+          <tbody>
+            <tr>
+              <td>Bloques</td>
+              <td>${agregarComaPorCadaMil(data.edificioNivel1Data.resourcesNeed['bricks'])}</td>
+            </tr>
+            <tr>
+              <td>Unidades de construcción</td>
+              <td>${agregarComaPorCadaMil(data.edificioNivel1Data.resourcesNeed['construction-units'])}</td>
+            </tr>
+            <tr>
+              <td>Tablones</td>
+              <td>${agregarComaPorCadaMil(data.edificioNivel1Data.resourcesNeed.planks)}</td>
+            </tr>
+            <tr>
+              <td>Concreto Reforzado</td>
+              <td>${agregarComaPorCadaMil(data.edificioNivel1Data.resourcesNeed['reinforced-concrete'])}</td>
+            </tr>
+            <tr>
+              <td>Valor en Infraestructura</td>
+              <td>${agregarComaPorCadaMil(data.edificioNivel1Data.referenceValue)}</td>
+            </tr>
+            <tr>
+              <td>Coste de construcción</td>
+              <td>${agregarComaPorCadaMil(data.edificioNivel1Data.coste)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="materials-objective-table">
+      	<div class="materials-lvl1-table-title">
+        	<h3>Nivel objetivo (${lvls})</h3>
+        </div>
+        
+        <table>
+          <tbody>
+            <tr>
+              <td>Bloques</td>
+              <td>${agregarComaPorCadaMil(data.edificioCalculateData.resourcesNeed.bricks)}</td>
+            </tr>
+            <tr>
+              <td>Unidades de construcción</td>
+              <td>${agregarComaPorCadaMil(data.edificioCalculateData.resourcesNeed['construction-units'])}</td>
+            </tr>
+            <tr>
+              <td>Tablones</td>
+              <td>${agregarComaPorCadaMil(data.edificioCalculateData.resourcesNeed.planks)}</td>
+            </tr>
+            <tr>
+              <td>Concreto Reforzado</td>
+              <td>${agregarComaPorCadaMil(data.edificioCalculateData.resourcesNeed['reinforced-concrete'])}</td>
+            </tr>
+            <tr>
+              <td>Valor en Infraestructura</td>
+              <td>${agregarComaPorCadaMil(data.edificioCalculateData.referenceValue)}</td>
+            </tr>
+            <tr>
+              <td>Coste de construcción</td>
+              <td>${agregarComaPorCadaMil(data.edificioCalculateData.coste)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  `;
+
+
+  contenedorInformacion.insertAdjacentHTML("beforeend", html);
+}
+ else {
+      // Handle errors here
+      console.error('Error sending data:', response.statusText);
+    }
+  } catch (error) {
+    // Handle AJAX request errors
+    console.error('Error in AJAX request:', error);
+  }
+});
+
+
+	</script>
+</body>
+</html>
